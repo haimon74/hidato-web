@@ -1,13 +1,4 @@
-import React, { memo, useRef, useEffect, useMemo } from 'react';
-import {
-  cellStyle,
-  revealedCellStyle,
-  selectedCellStyle,
-  inputStyle,
-  numberStyle,
-  revealedNumberStyle,
-  solutionNumberStyle,
-} from '../styles/gameStyles';
+import React, { memo, useRef, useEffect, useMemo, CSSProperties } from 'react';
 
 interface CellProps {
   value: number;
@@ -59,6 +50,16 @@ const Cell: React.FC<CellProps> = memo(({
     margin: 0,
   }), [isSelected, isRevealed, row, col]);
 
+  const revealedCellStyle: CSSProperties = {
+    ...cellStyle,
+    backgroundColor: '#e3f2fd',
+  };
+  
+  const selectedCellStyle: CSSProperties = {
+    ...cellStyle,
+    backgroundColor: '#bbdefb',
+  };
+
   const inputStyle = useMemo<React.CSSProperties>(() => ({
     width: '100%',
     height: '100%',
@@ -78,12 +79,6 @@ const Cell: React.FC<CellProps> = memo(({
     if (isSelected) return selectedCellStyle;
     if (isRevealed) return revealedCellStyle;
     return cellStyle;
-  };
-
-  const getNumberStyle = () => {
-    if (value !== undefined) return solutionNumberStyle;
-    if (isRevealed) return revealedNumberStyle;
-    return numberStyle;
   };
 
   return (

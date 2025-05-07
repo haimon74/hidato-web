@@ -27,41 +27,6 @@ export const boardStyle: CSSProperties = {
   borderRadius: '4px',
 };
 
-export const cellStyle: CSSProperties = {
-  width: '39px',
-  height: '39px',
-  border: '1px solid darkgray',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  backgroundColor: 'white',
-  cursor: 'pointer',
-  userSelect: 'none',
-  position: 'relative',
-  top: -1,
-  left: -1,
-};
-
-export const revealedCellStyle: CSSProperties = {
-  ...cellStyle,
-  backgroundColor: '#e3f2fd',
-};
-
-export const selectedCellStyle: CSSProperties = {
-  ...cellStyle,
-  backgroundColor: '#bbdefb',
-};
-
-export const inputStyle: CSSProperties = {
-  width: '100%',
-  height: '100%',
-  border: 'none',
-  textAlign: 'center',
-  fontSize: '1.2rem',
-  backgroundColor: 'transparent',
-  outline: 'none',
-};
-
 export const numberStyle: CSSProperties = {
   fontSize: '1.2rem',
   fontWeight: 'bold',
