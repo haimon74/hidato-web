@@ -1,4 +1,5 @@
 import React, { memo, useMemo } from 'react';
+import styles from './GameControls.module.css';
 
 interface GameControlsProps {
   size: number;
@@ -19,10 +20,7 @@ const GameControls: React.FC<GameControlsProps> = memo(({
   onToggleSolution,
   showSolution,
 }) => {
-  const controlsStyle = useMemo<React.CSSProperties>(() => ({
-    marginBottom: '20px',
-  }), []);
-
+  
   const buttonStyle = useMemo<React.CSSProperties>(() => ({
     margin: '0 10px',
     padding: '8px 16px',
@@ -34,17 +32,7 @@ const GameControls: React.FC<GameControlsProps> = memo(({
     borderRadius: '4px',
   }), []);
 
-  const toggleButtonStyle = useMemo<React.CSSProperties>(() => ({
-    ...buttonStyle,
-    backgroundColor: showSolution ? '#f44336' : '#4caf50',
-  }), [buttonStyle, showSolution]);
-
-  const selectStyle = useMemo<React.CSSProperties>(() => ({
-    margin: '0 10px',
-    padding: '8px',
-    fontSize: '1rem',
-  }), []);
-
+  
   const handleSizeChange = useMemo(() => (e: React.ChangeEvent<HTMLSelectElement>) => {
     onSizeChange(Number(e.target.value));
   }, [onSizeChange]);
@@ -54,13 +42,13 @@ const GameControls: React.FC<GameControlsProps> = memo(({
   }, [onDifficultyChange]);
 
   return (
-    <div style={controlsStyle}>
+    <div className={styles.controls}>
       <label>
         Grid Size:
         <select
           value={size}
           onChange={handleSizeChange}
-          style={selectStyle}
+          className={styles.select}
         >
           <option value={4}>4x4</option>
           <option value={5}>5x5</option>
@@ -76,7 +64,7 @@ const GameControls: React.FC<GameControlsProps> = memo(({
         <select
           value={difficulty}
           onChange={handleDifficultyChange}
-          style={selectStyle}
+          className={styles.select}
         >
           <option value="easy">Easy</option>
           <option value="medium">Medium</option>
@@ -84,11 +72,14 @@ const GameControls: React.FC<GameControlsProps> = memo(({
         </select>
       </label>
 
-      <button onClick={onNewGame} style={buttonStyle}>
+      <button onClick={onNewGame} className={styles.button}>
         New Game
       </button>
 
-      <button onClick={onToggleSolution} style={toggleButtonStyle}>
+      <button
+        onClick={onToggleSolution}
+        className={`${styles.button} ${styles.toggleButton} ${showSolution ? styles.toggleButtonActive : ''}`}
+      >
         {showSolution ? 'Hide Solution' : 'Show Solution'}
       </button>
     </div>

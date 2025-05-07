@@ -16,7 +16,7 @@ export const getNeighbors = (x: number, y: number, grid: Grid): Position[] => {
   const size = grid.length;
   return DIRECTIONS
     .map(([dx, dy]) => [x + dx, y + dy] as Position)
-    .filter(([nx, ny]) => isValidPosition(nx, ny, size) && grid[nx][ny] === 0);
+    .filter(([nx, ny]) => isValidPosition(nx, ny, size) && grid[ny][nx] === 0);
 };
 
 export const warnsdorffSort = (x: number, y: number, grid: Grid): Position[] => {
@@ -28,35 +28,76 @@ export const warnsdorffSort = (x: number, y: number, grid: Grid): Position[] => 
   });
 };
 
-export const generatePath = (size: number): Grid => {
-  const grid: Grid = Array(size).fill(0).map(() => Array(size).fill(0));
-  const maxNumber = size * size;
-  let currentNumber = 1;
-  let x = Math.floor(Math.random() * size);
-  let y = Math.floor(Math.random() * size);
+/**
+ * Generate a Hamiltonian path using Warnsdorff's heuristic.
+ * If it fails to fill the grid, retries until success.
+ */
+export const generateWarnsdorffPath = (size: number): Grid => {
+  const maxTries = 1000;
+  for (let attempt = 0; attempt < maxTries; attempt++) {
+    const grid: Grid = Array(size).fill(0).map(() => Array(size).fill(0));
+    const maxNumber = size * size;
 
-  grid[y][x] = currentNumber;
+    let x = Math.floor(Math.random() * size);
+    let y = Math.floor(Math.random() * size);
+    grid[y][x] = 1;
 
-  while (currentNumber < maxNumber) {
-    const neighbors = getValidNeighbors(x, y, size, grid);
-    if (neighbors.length === 0) {
-      // If no valid neighbors, backtrack
-      const prevPos = findPreviousNumber(grid, currentNumber);
-      if (!prevPos) break;
-      [x, y] = prevPos;
-      currentNumber--;
-      continue;
+    let failed = false;
+
+    for (let num = 2; num <= maxNumber; num++) {
+      const neighbors: [number, number][] = [];
+      for (let dx = -1; dx <= 1; dx++) {
+        for (let dy = -1; dy <= 1; dy++) {
+          if (dx === 0 && dy === 0) continue;
+          const nx = x + dx;
+          const ny = y + dy;
+          if (nx >= 0 && nx < size && ny >= 0 && ny < size && grid[ny][nx] === 0) {
+            neighbors.push([nx, ny]);
+          }
+        }
+      }
+
+      if (neighbors.length === 0) {
+        failed = true;
+        break;
+      }
+
+      neighbors.sort((a, b) => {
+        const onwardA = countUnvisitedNeighbors(grid, a[0], a[1]);
+        const onwardB = countUnvisitedNeighbors(grid, b[0], b[1]);
+        return onwardA - onwardB;
+      });
+
+      const [nx, ny] = neighbors[0];
+      grid[ny][nx] = num;
+      x = nx;
+      y = ny;
+
+      if (num === maxNumber) {
+        return grid;
+      }
     }
-
-    const [nx, ny] = neighbors[Math.floor(Math.random() * neighbors.length)];
-    currentNumber++;
-    grid[ny][nx] = currentNumber;
-    x = nx;
-    y = ny;
+    if (!failed) break;
   }
-
-  return grid;
+  throw new Error("Failed to generate Hamiltonian path with Warnsdorff's heuristic after many tries.");
 };
+
+// Helper: count unvisited neighbors for Warnsdorff's heuristic
+function countUnvisitedNeighbors(grid: Grid, x: number, y: number): number {
+  const size = grid.length;
+  let count = 0;
+  for (let dx = -1; dx <= 1; dx++) {
+    for (let dy = -1; dy <= 1; dy++) {
+      if (dx === 0 && dy === 0) continue;
+      const nx = x + dx;
+      const ny = y + dy;
+      if (nx >= 0 && nx < size && ny >= 0 && ny < size && grid[ny][nx] === 0) {
+        count++;
+      }
+    }
+  }
+  return count;
+}
 
 export const maskGrid = (solution: Grid, revealCount: number): Grid => {
   const size = solution.length;
@@ -164,8 +205,8 @@ export interface PuzzleResult {
 }
 
 export const generatePuzzle = (size: number, difficulty: 'easy' | 'medium' | 'hard'): PuzzleResult => {
-  // Generate a complete solution
-  const solution = generatePath(size);
+  // Generate a complete solution using Warnsdorff's heuristic
+  const solution = generateWarnsdorffPath(size);
 
   // Determine number of revealed cells based on difficulty
   const revealCount = {

@@ -3,7 +3,7 @@ import Board, { BoardRef } from './components/Board';
 import GameControls from './components/GameControls';
 import GameInstructions from './components/GameInstructions';
 import GameStatus from './components/GameStatus';
-import { containerStyle, titleStyle } from './styles/gameStyles';
+import styles from './App.module.css';
 
 const App: React.FC = () => {
   const [size, setSize] = useState(5);
@@ -37,8 +37,8 @@ const App: React.FC = () => {
   };
 
   return (
-    <div style={containerStyle}>
-      <h1 style={titleStyle}>Hidato Puzzle</h1>
+    <div className={styles.container}>
+      <h1 className={styles.title}>Hidato Puzzle</h1>
       <GameControls
         size={size}
         difficulty={difficulty}

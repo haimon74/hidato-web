@@ -1,4 +1,5 @@
 import React, { memo, useMemo } from 'react';
+import styles from './GameStatus.module.css';
 
 interface GameStatusProps {
   isComplete: boolean;
@@ -6,13 +7,6 @@ interface GameStatusProps {
 }
 
 const GameStatus: React.FC<GameStatusProps> = memo(({ isComplete, showSolution }) => {
-  const statusStyle = useMemo<React.CSSProperties>(() => ({
-    fontSize: '1.2rem',
-    fontWeight: 'bold',
-    marginBottom: '20px',
-    color: isComplete ? '#4caf50' : showSolution ? '#f44336' : '#2196f3',
-  }), [isComplete, showSolution]);
-
   const getStatusMessage = useMemo(() => {
     if (isComplete) {
       return 'Congratulations! You solved the puzzle!';
@@ -23,8 +17,12 @@ const GameStatus: React.FC<GameStatusProps> = memo(({ isComplete, showSolution }
     return 'Keep going!';
   }, [isComplete, showSolution]);
 
+  let statusClass = styles.status;
+  if (isComplete) statusClass += ` ${styles.complete}`;
+  else if (showSolution) statusClass += ` ${styles.solution}`;
+
   return (
-    <div style={statusStyle}>
+    <div className={statusClass}>
       {getStatusMessage}
     </div>
   );

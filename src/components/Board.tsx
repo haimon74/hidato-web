@@ -1,6 +1,7 @@
 import React, { memo, useCallback, useMemo, useRef, useEffect, useState, forwardRef, useImperativeHandle } from 'react';
 import Cell from './Cell';
-import { generatePuzzle, checkSolution, Grid } from '../utils/hidatoUtils';
+import { generatePuzzle, checkSolution, Grid } from './utils/hidatoUtils';
+import styles from './Board.module.css';
 
 interface BoardProps {
   size: number;
@@ -124,25 +125,14 @@ const Board = forwardRef<BoardRef, BoardProps>(({
     };
   }, [selectedCell, inputValue, applyNumberToCell, checkCompletion]);
 
-  const containerStyle = useMemo<React.CSSProperties>(() => ({
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    margin: '20px 0',
-  }), []);
-
-  const boardStyle = useMemo<React.CSSProperties>(() => ({
-    display: 'grid',
-    gridTemplateColumns: `repeat(${size}, 40px)`,
-    border: '2px solid #333',
-    boxSizing: 'border-box',
-  }), [size]);
-
   const displayGrid = useMemo(() => showSolution ? solution : grid, [showSolution, solution, grid]);
 
   return (
-    <div ref={boardRef} style={containerStyle}>
-      <div style={boardStyle}>
+    <div ref={boardRef} className={styles.container}>
+      <div
+        className={styles.board}
+        style={{ gridTemplateColumns: `repeat(${size}, 40px)` }}
+      >
         {displayGrid.map((row, i) =>
           row.map((cell, j) => (
             <Cell

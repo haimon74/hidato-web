@@ -1,4 +1,5 @@
-import React, { memo, useRef, useEffect, useMemo, CSSProperties } from 'react';
+import React, { memo, useRef, useEffect } from 'react';
+import styles from './Cell.module.css';
 
 interface CellProps {
   value: number;
@@ -29,60 +30,14 @@ const Cell: React.FC<CellProps> = memo(({
     }
   }, [isSelected]);
 
-  const cellStyle = useMemo<React.CSSProperties>(() => ({
-    width: '40px',
-    height: '40px',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    background: isSelected ? '#e3f2fd' : isRevealed ? '#f5f5f5' : 'white',
-    cursor: 'pointer',
-    fontSize: '1.2rem',
-    fontWeight: 'bold',
-    color: isRevealed ? '#2196f3' : '#222',
-    boxSizing: 'border-box',
-    userSelect: 'none',
-    borderRight: '1px solid #333',
-    borderBottom: '1px solid #333',
-    borderLeft: col === 0 ? '1px solid #333' : undefined,
-    borderTop: row === 0 ? '1px solid #333' : undefined,
-    padding: 0,
-    margin: 0,
-  }), [isSelected, isRevealed, row, col]);
-
-  const revealedCellStyle: CSSProperties = {
-    ...cellStyle,
-    backgroundColor: '#e3f2fd',
-  };
-  
-  const selectedCellStyle: CSSProperties = {
-    ...cellStyle,
-    backgroundColor: '#bbdefb',
-  };
-
-  const inputStyle = useMemo<React.CSSProperties>(() => ({
-    width: '100%',
-    height: '100%',
-    border: 'none',
-    textAlign: 'center',
-    fontSize: '1.2rem',
-    backgroundColor: 'transparent',
-    outline: 'none',
-    fontWeight: 'bold',
-    color: '#2196f3',
-    padding: 0,
-    margin: 0,
-    boxSizing: 'border-box',
-  }), []);
-
-  const getCellStyle = () => {
-    if (isSelected) return selectedCellStyle;
-    if (isRevealed) return revealedCellStyle;
-    return cellStyle;
-  };
+  let cellClass = styles.cell;
+  if (isSelected) cellClass += ` ${styles.cellSelected}`;
+  else if (isRevealed) cellClass += ` ${styles.cellRevealed}`;
+  if (col === 0) cellClass += ` ${styles.cellFirstCol}`;
+  if (row === 0) cellClass += ` ${styles.cellFirstRow}`;
 
   return (
-    <div style={getCellStyle()} onClick={onClick}>
+    <div className={cellClass} onClick={onClick}>
       {isSelected && !isRevealed ? (
         <input
           ref={inputRef}
@@ -93,7 +48,7 @@ const Cell: React.FC<CellProps> = memo(({
           value={inputValue}
           onChange={() => {}}
           onKeyDown={onKeyPress}
-          style={inputStyle}
+          className={styles.input}
         />
       ) : (
         value || ''
