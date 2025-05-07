@@ -1,4 +1,4 @@
-import React, { memo, useMemo } from 'react';
+import React, { memo } from 'react';
 import styles from './GameInstructions.module.css';
 
 interface GameInstructionsProps {

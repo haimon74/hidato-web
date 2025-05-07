@@ -21,18 +21,6 @@ const GameControls: React.FC<GameControlsProps> = memo(({
   showSolution,
 }) => {
   
-  const buttonStyle = useMemo<React.CSSProperties>(() => ({
-    margin: '0 10px',
-    padding: '8px 16px',
-    fontSize: '1rem',
-    cursor: 'pointer',
-    backgroundColor: '#2196f3',
-    color: 'white',
-    border: 'none',
-    borderRadius: '4px',
-  }), []);
-
-  
   const handleSizeChange = useMemo(() => (e: React.ChangeEvent<HTMLSelectElement>) => {
     onSizeChange(Number(e.target.value));
   }, [onSizeChange]);
