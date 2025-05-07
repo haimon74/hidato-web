@@ -47,4 +47,9 @@
   padding: 0;
   margin: 0;
   box-sizing: border-box;
+}
+
+.cellFirstLast {
+  background: #ffd580 !important; /* light orange */
+  color: #b26a00 !important;
 } 

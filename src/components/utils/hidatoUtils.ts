@@ -103,23 +103,39 @@ export const maskGrid = (solution: Grid, revealCount: number): Grid => {
   const size = solution.length;
   const puzzle: Grid = Array(size).fill(0).map(() => Array(size).fill(0));
   const positions: [number, number][] = [];
+  let firstPos: [number, number] | null = null;
+  let lastPos: [number, number] | null = null;
+  const N = size * size;
 
-  // Collect all positions
+  // Find positions of 1 and N
   for (let i = 0; i < size; i++) {
     for (let j = 0; j < size; j++) {
+      if (solution[i][j] === 1) firstPos = [i, j];
+      if (solution[i][j] === N) lastPos = [i, j];
       positions.push([i, j]);
     }
   }
 
-  // Shuffle positions
-  for (let i = positions.length - 1; i > 0; i--) {
+  // Remove 1 and N from random reveal candidates
+  const filteredPositions = positions.filter(
+    ([i, j]) =>
+      !(firstPos && i === firstPos[0] && j === firstPos[1]) &&
+      !(lastPos && i === lastPos[0] && j === lastPos[1])
+  );
+
+  // Shuffle filtered positions
+  for (let i = filteredPositions.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
-    [positions[i], positions[j]] = [positions[j], positions[i]];
+    [filteredPositions[i], filteredPositions[j]] = [filteredPositions[j], filteredPositions[i]];
   }
 
-  // Reveal the first revealCount positions
+  // Always reveal 1 and N
+  if (firstPos) puzzle[firstPos[0]][firstPos[1]] = 1;
+  if (lastPos) puzzle[lastPos[0]][lastPos[1]] = N;
+
+  // Reveal the rest
   for (let i = 0; i < revealCount; i++) {
-    const [y, x] = positions[i];
+    const [y, x] = filteredPositions[i];
     puzzle[y][x] = solution[y][x];
   }
 

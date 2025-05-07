@@ -10,6 +10,7 @@ interface CellProps {
   onKeyPress: (e: React.KeyboardEvent) => void;
   row?: number;
   col?: number;
+  isFirstOrLast?: boolean;
 }
 
 const Cell: React.FC<CellProps> = memo(({
@@ -21,6 +22,7 @@ const Cell: React.FC<CellProps> = memo(({
   onKeyPress,
   row = 0,
   col = 0,
+  isFirstOrLast = false,
 }) => {
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -31,6 +33,7 @@ const Cell: React.FC<CellProps> = memo(({
   }, [isSelected]);
 
   let cellClass = styles.cell;
+  if (isFirstOrLast) cellClass += ` ${styles.cellFirstLast}`;
   if (isSelected) cellClass += ` ${styles.cellSelected}`;
   else if (isRevealed) cellClass += ` ${styles.cellRevealed}`;
   if (col === 0) cellClass += ` ${styles.cellFirstCol}`;

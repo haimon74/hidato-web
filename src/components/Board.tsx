@@ -134,19 +134,24 @@ const Board = forwardRef<BoardRef, BoardProps>(({
         style={{ gridTemplateColumns: `repeat(${size}, 40px)` }}
       >
         {displayGrid.map((row, i) =>
-          row.map((cell, j) => (
-            <Cell
-              key={`${i}-${j}`}
-              value={cell}
-              isRevealed={grid[i][j] !== 0}
-              isSelected={selectedCell?.[0] === i && selectedCell?.[1] === j}
-              onClick={() => handleCellClick(i, j)}
-              inputValue={selectedCell?.[0] === i && selectedCell?.[1] === j ? inputValue : ''}
-              onKeyPress={handleKeyPress}
-              row={i}
-              col={j}
-            />
-          ))
+          row.map((cell, j) => {
+            const isFirstOrLast =
+              cell === 1 || cell === size * size;
+            return (
+              <Cell
+                key={`${i}-${j}`}
+                value={cell}
+                isRevealed={grid[i][j] !== 0}
+                isSelected={selectedCell?.[0] === i && selectedCell?.[1] === j}
+                onClick={() => handleCellClick(i, j)}
+                inputValue={selectedCell?.[0] === i && selectedCell?.[1] === j ? inputValue : ''}
+                onKeyPress={handleKeyPress}
+                row={i}
+                col={j}
+                isFirstOrLast={isFirstOrLast}
+              />
+            );
+          })
         )}
       </div>
     </div>
